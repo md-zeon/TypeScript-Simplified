@@ -337,3 +337,9 @@ The `tsconfig.json` file is central to TypeScript development and understanding 
 ## Official Documentation
 
 - [TypeScript tsconfig Reference](https://www.typescriptlang.org/tsconfig)
+
+- [TypeScript Handbook - tsconfig.json](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html)
+
+- [TypeScript Compiler Options](https://www.typescriptlang.org/docs/handbook/compiler-options.html)
+
+- [TSConfig Bases](https://github.com/tsconfig/bases/)
