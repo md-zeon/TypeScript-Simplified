@@ -333,3 +333,7 @@ Control which type definitions are included.
 Use `tsc --listFiles` to see which files are being compiled, or `tsc --explainFiles` for detailed information.
 
 The `tsconfig.json` file is central to TypeScript development and understanding its options will help you configure TypeScript effectively for any project.
+
+## Official Documentation
+
+- [TypeScript tsconfig Reference](https://www.typescriptlang.org/tsconfig)
