@@ -1,249 +1,337 @@
-// Array Destructuring
-console.log("=== Array Destructuring ===");
+// Destructured and Rest Parameters in TypeScript
 
-// Basic array destructuring
+// Array Destructuring
+
+// Basic Array Destructuring
 const numbers = [1, 2, 3, 4, 5];
-const [first, second] = numbers;
-console.log("First:", first, "Second:", second); // First: 1 Second: 2
+const [first, second, third] = numbers;
+
+console.log(first); // 1
+console.log(second); // 2
+console.log(third); // 3
 
 // Skipping elements
-const [, , third] = numbers;
-console.log("Third:", third); // Third: 3
+const [, , thirdElement] = numbers;
+console.log(thirdElement); // 3
 
-// Rest element
+// Using rest operator
 const [head, ...tail] = numbers;
-console.log("Head:", head, "Tail:", tail); // Head: 1 Tail: [2, 3, 4, 5]
+console.log(head); // 1
+console.log(tail); // [2, 3, 4, 5]
 
-// Default values
-const [a = 10, b = 20, c = 30] = [1];
-console.log("With defaults - a:", a, "b:", b, "c:", c); // a: 1 b: 20 c: 30
+// Array Destructuring with Types
+const coordinates: [number, number, number] = [10, 20, 30];
+const [x, y, z] = coordinates;
+console.log(x, y, z); // 10, 20, 30
+
+// Destructuring with type annotations
+const [userName, userAge, userIsActive]: [string, number, boolean] = [
+	"Alice",
+	25,
+	true,
+];
+console.log(userName, userAge, userIsActive); // Alice, 25, true
+
+// Default Values in Array Destructuring
+const [a = 0, b = 0, c = 0] = [1, 2];
+console.log(a, b, c); // 1, 2, 0
+
+// With undefined values
+const sparseArray = [1, undefined, 3];
+const [firstVal = 0, secondVal = 0, thirdVal = 0] = sparseArray;
+console.log(firstVal, secondVal, thirdVal); // 1, 0, 3
 
 // Object Destructuring
-console.log("\n=== Object Destructuring ===");
 
-// Basic object destructuring
+// Basic Object Destructuring
 const person = {
-	name: "Alice",
-	age: 25,
+	name: "John",
+	age: 30,
 	city: "New York",
 	country: "USA",
 };
 
-const { name, age } = person;
-console.log("Name:", name, "Age:", age); // Name: Alice Age: 25
+const { name: personName, age: personAge } = person;
+console.log(personName, personAge); // John, 30
 
-// Renaming properties
-const { name: fullName, age: yearsOld } = person;
-console.log("Full Name:", fullName, "Years:", yearsOld); // Full Name: Alice Years: 25
+// Renaming variables
+const { name: fullName, age: years } = person;
+console.log(fullName, years); // John, 30
 
-// Default values
-const { city, country } = person;
-const state = "Unknown"; // Default value since person doesn't have state
-console.log("City:", city, "Country:", country, "State:", state); // State: Unknown
+// Object Destructuring with Types
+interface User {
+	id: number;
+	name: string;
+	email: string;
+	isActive: boolean;
+}
 
-// Nested destructuring
-const user = {
+const user: User = {
 	id: 1,
-	profile: {
-		firstName: "John",
-		lastName: "Doe",
-		contact: {
-			email: "john@example.com",
-			phone: "123-456-7890",
+	name: "Alice",
+	email: "alice@example.com",
+	isActive: true,
+};
+
+const { id, name: userFullName, email: userEmail }: User = user;
+console.log(id, userFullName, userEmail); // 1, Alice, alice@example.com
+
+// Default Values in Object Destructuring
+const config = { host: "localhost", port: 8080 };
+const { host, port, ssl = false } = config;
+console.log(host, port, ssl); // localhost, 8080, false
+
+// With undefined properties
+const partialUser = { name: "Bob" };
+const {
+	name: partialName,
+	age = 18,
+	email = "default@example.com",
+} = partialUser;
+console.log(partialName, age, email); // Bob, 18, default@example.com
+
+// Nested Object Destructuring
+const company = {
+	name: "Tech Corp",
+	address: {
+		street: "123 Main St",
+		city: "San Francisco",
+		coordinates: {
+			lat: 37.7749,
+			lng: -122.4194,
 		},
 	},
 };
 
 const {
-	profile: {
-		firstName,
-		contact: { email },
+	name: companyName,
+	address: {
+		city,
+		coordinates: { lat, lng },
 	},
-} = user;
-console.log("First Name:", firstName, "Email:", email); // First Name: John Email: john@example.com
+} = company;
+
+console.log(companyName, city, lat, lng); // Tech Corp, San Francisco, 37.7749, -122.4194
 
 // Rest Parameters in Functions
-console.log("\n=== Rest Parameters ===");
 
-// Basic rest parameters
+// Basic Rest Parameters
 function sum(...numbers: number[]): number {
 	return numbers.reduce((total, num) => total + num, 0);
 }
 
-console.log("Sum of 1, 2, 3:", sum(1, 2, 3)); // 6
-console.log("Sum of 5, 10, 15, 20:", sum(5, 10, 15, 20)); // 50
+console.log(sum(1, 2, 3)); // 6
+console.log(sum(1, 2, 3, 4, 5)); // 15
 
-// Rest with regular parameters
+// Rest parameters with regular parameters
 function formatMessage(prefix: string, ...messages: string[]): string {
 	return `${prefix}: ${messages.join(" ")}`;
 }
 
-console.log(formatMessage("INFO", "This", "is", "a", "message"));
-// "INFO: This is a message"
+console.log(formatMessage("INFO", "This", "is", "a", "message")); // INFO: This is a message
+console.log(formatMessage("ERROR", "Something", "went", "wrong")); // ERROR: Something went wrong
 
-// Rest with tuple types
-function processCoordinates(...coords: [number, number, number?]): string {
-	const [x, y, z] = coords;
-	return z !== undefined
-		? `3D coordinates: (${x}, ${y}, ${z})`
-		: `2D coordinates: (${x}, ${y})`;
+// Rest parameters with different types
+function createElement(
+	tag: string,
+	className?: string,
+	...children: string[]
+): string {
+	const classAttr = className ? ` class="${className}"` : "";
+	const content = children.join("");
+	return `<${tag}${classAttr}>${content}</${tag}>`;
 }
 
-console.log(processCoordinates(10, 20)); // "2D coordinates: (10, 20)"
-console.log(processCoordinates(10, 20, 30)); // "3D coordinates: (10, 20, 30)"
+console.log(createElement("div", "container", "Hello", " ", "World")); // <div class="container">Hello World</div>
+console.log(createElement("p", undefined, "This", " is", " a", " paragraph")); // <p>This is a paragraph</p>
 
-// Destructuring in Function Parameters
-console.log("\n=== Destructuring in Function Parameters ===");
-
-// Array destructuring in parameters
-function printCoordinates([x, y]: [number, number]): void {
-	console.log(`X: ${x}, Y: ${y}`);
+// Advanced Rest Parameters
+function mergeArrays<T>(...arrays: T[][]): T[] {
+	return arrays.flat();
 }
 
-printCoordinates([5, 10]); // X: 5, Y: 10
+const arr1 = [1, 2];
+const arr2 = [3, 4];
+const arr3 = [5, 6];
+console.log(mergeArrays(arr1, arr2, arr3)); // [1, 2, 3, 4, 5, 6]
 
-// Object destructuring in parameters
-function createUser({
-	name,
-	age,
-	email,
-}: {
-	name: string;
-	age: number;
-	email?: string;
-}): { name: string; age: number; email?: string } {
-	return { name, age, email };
+// Rest parameters in class methods
+class Logger {
+	log(level: string, ...messages: string[]): void {
+		const timestamp = new Date().toISOString();
+		console.log(`[${timestamp}] ${level.toUpperCase()}: ${messages.join(" ")}`);
+	}
 }
 
-const newUser = createUser({ name: "Bob", age: 30, email: "bob@example.com" });
-console.log("New user:", newUser);
+const logger = new Logger();
+logger.log("info", "Application", "started");
+logger.log("error", "Database", "connection", "failed");
 
-// Default values in destructured parameters
-function configure({
-	host = "localhost",
-	port = 8080,
-	ssl = false,
-}: {
+// Combining destructuring and rest parameters
+function processItems(
+	items: number[],
+	...processors: ((n: number) => number)[]
+): number[] {
+	return processors.reduce((acc, processor) => acc.map(processor), items);
+}
+
+const numbers2 = [1, 2, 3, 4, 5];
+const result = processItems(
+	numbers2,
+	(n) => n * 2, // Double
+	(n) => n + 1, // Add 1
+	(n) => n % 10, // Modulo 10
+);
+console.log(result); // [3, 5, 7, 9, 1]
+
+// Destructuring in function parameters
+function drawPoint({ x, y }: { x: number; y: number }): void {
+	console.log(`Drawing point at (${x}, ${y})`);
+}
+
+drawPoint({ x: 10, y: 20 });
+
+// Array destructuring in function parameters
+function swap([a, b]: [number, number]): [number, number] {
+	return [b, a];
+}
+
+console.log(swap([1, 2])); // [2, 1]
+
+// Complex destructuring in function parameters
+interface ApiResponse {
+	data: {
+		users: Array<{
+			id: number;
+			name: string;
+			profile: {
+				avatar: string;
+				bio: string;
+			};
+		}>;
+		total: number;
+	};
+	status: number;
+}
+
+function processApiResponse({
+	data: { users, total },
+	status,
+}: ApiResponse): void {
+	console.log(`Status: ${status}, Total users: ${total}`);
+	users.forEach(({ id, name, profile: { avatar, bio } }) => {
+		console.log(`User ${id}: ${name} - ${bio} (${avatar})`);
+	});
+}
+
+const response: ApiResponse = {
+	data: {
+		users: [
+			{
+				id: 1,
+				name: "Alice",
+				profile: {
+					avatar: "alice.jpg",
+					bio: "Software engineer",
+				},
+			},
+			{
+				id: 2,
+				name: "Bob",
+				profile: {
+					avatar: "bob.jpg",
+					bio: "Designer",
+				},
+			},
+		],
+		total: 2,
+	},
+	status: 200,
+};
+
+processApiResponse(response);
+
+// Destructuring with rest in function parameters
+function extractFirstAndRest<T>([first, ...rest]: T[]): {
+	first: T;
+	rest: T[];
+} {
+	return { first, rest };
+}
+
+const { first: firstItem, rest: remainingItems } = extractFirstAndRest([
+	1, 2, 3, 4, 5,
+]);
+console.log(firstItem); // 1
+console.log(remainingItems); // [2, 3, 4, 5]
+
+// Practical example: Configuration with defaults
+interface ServerConfig {
 	host?: string;
 	port?: number;
 	ssl?: boolean;
-} = {}): string {
-	return `Server: ${ssl ? "https" : "http"}://${host}:${port}`;
+	timeout?: number;
 }
 
-console.log(configure()); // "Server: http://localhost:8080"
-console.log(configure({ host: "api.example.com", ssl: true })); // "Server: https://api.example.com:8080"
-
-// Rest in destructuring
-console.log("\n=== Rest in Destructuring ===");
-
-// Array rest destructuring
-const [firstNum, ...remaining] = [1, 2, 3, 4, 5];
-console.log("First:", firstNum, "Remaining:", remaining); // First: 1 Remaining: [2, 3, 4, 5]
-
-// Object rest destructuring
-const {
-	name: personName,
-	age: personAge,
-	...otherProps
-} = {
-	name: "Charlie",
-	age: 35,
-	city: "London",
-	country: "UK",
-	job: "Developer",
-};
-console.log("Name:", personName, "Age:", personAge, "Other:", otherProps);
-// Other: { city: "London", country: "UK", job: "Developer" }
-
-// Advanced Patterns
-console.log("\n=== Advanced Patterns ===");
-
-// Destructuring with type annotations
-interface Point {
-	x: number;
-	y: number;
+function createServer({
+	host = "localhost",
+	port = 8080,
+	ssl = false,
+	timeout = 30000,
+}: ServerConfig = {}): void {
+	console.log(
+		`Server config: ${host}:${port}, SSL: ${ssl}, Timeout: ${timeout}ms`,
+	);
 }
 
-function calculateDistance(p1: Point, p2: Point): number {
-	const { x: x1, y: y1 } = p1;
-	const { x: x2, y: y2 } = p2;
-	return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
-}
-
-const point1: Point = { x: 0, y: 0 };
-const point2: Point = { x: 3, y: 4 };
-console.log("Distance:", calculateDistance(point1, point2)); // Distance: 5
+createServer();
+createServer({ host: "api.example.com", port: 443, ssl: true });
 
 // Destructuring in loops
-const users = [
-	{ id: 1, name: "Alice", role: "admin" },
-	{ id: 2, name: "Bob", role: "user" },
-	{ id: 3, name: "Charlie", role: "user" },
+const users2 = [
+	{ id: 1, name: "Alice", age: 25 },
+	{ id: 2, name: "Bob", age: 30 },
+	{ id: 3, name: "Charlie", age: 35 },
 ];
 
-console.log("Users with roles:");
-for (const { name, role } of users) {
-	console.log(`${name} is a ${role}`);
+for (const { id, name, age } of users2) {
+	console.log(`${name} (ID: ${id}) is ${age} years old`);
 }
 
-// Destructuring function return values
-function getUserInfo(): [string, number, string] {
-	return ["Alice", 25, "alice@example.com"];
+// Array destructuring in loops
+const pairs = [
+	[1, "one"],
+	[2, "two"],
+	[3, "three"],
+];
+
+for (const [number, word] of pairs) {
+	console.log(`${number} = ${word}`);
 }
 
-const [userName, userAge, userEmail] = getUserInfo();
-console.log("User info:", { userName, userAge, userEmail });
-
-// Complex destructuring with defaults and rest
-function processApiResponse(response: any) {
-	const {
-		data: { users = [], total = 0, ...meta },
-		status,
-		message = "Success",
-	} = response;
-
-	console.log("Status:", status);
-	console.log("Message:", message);
-	console.log("Total users:", total);
-	console.log("Users:", users);
-	console.log("Meta:", meta);
-}
-
-const apiResponse = {
-	data: {
-		users: ["Alice", "Bob"],
-		total: 2,
-		page: 1,
-		limit: 10,
-	},
-	status: 200,
-	message: "Data retrieved successfully",
+// Advanced: Destructuring with computed property names
+const key = "dynamicKey";
+const obj = {
+	[key]: "dynamic value",
+	staticKey: "static value",
 };
 
-processApiResponse(apiResponse);
+const { [key]: dynamicValue, staticKey } = obj;
+console.log(dynamicValue); // "dynamic value"
+console.log(staticKey); // "static value"
 
 // Type-safe destructuring with generics
 function extractValues<T extends Record<string, any>, K extends keyof T>(
 	obj: T,
-	keys: K[],
+	...keys: K[]
 ): Pick<T, K> {
 	const result = {} as Pick<T, K>;
-	for (const key of keys) {
+	keys.forEach((key) => {
 		result[key] = obj[key];
-	}
+	});
 	return result;
 }
 
-const fullUser = {
-	id: 1,
-	name: "Alice",
-	email: "alice@example.com",
-	password: "secret",
-	createdAt: new Date(),
-};
-
-const publicUser = extractValues(fullUser, ["id", "name", "email"]);
-console.log("Public user:", publicUser); // No password or createdAt
-
-console.log("\n=== All examples completed ===");
+const person2 = { name: "Alice", age: 25, city: "NYC", country: "USA" };
+const extracted = extractValues(person2, "name", "age");
+console.log(extracted); // { name: "Alice", age: 25 }
